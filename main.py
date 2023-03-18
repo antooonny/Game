@@ -6,17 +6,23 @@ def display_score():
     score_surface = score.render(f'Score: {curr_time}', False, (64, 64, 64)).convert_alpha()
     score_rec = score_surface.get_rect(center=(400, 50))
     screen.blit(score_surface, score_rec)
-    print(curr_time)
+    return curr_time
 pygame.init()
 screen = pygame.display.set_mode((800, 400))
 pygame.display.set_caption('Experimental Game!')
 clock = pygame.time.Clock()
-game_active = True
+game_active = False
 start_time = 0
 test_font = pygame.font.Font('font/Pixeltype.ttf', 50)
 
 score = pygame.font.Font('font/Pixeltype.ttf', 50)
+title = pygame.font.Font('font/Pixeltype.ttf', 50)
+title_surf = title.render("This is my game!", False, 'black').convert_alpha()
+title_rec = title_surf.get_rect(center = (400, 50))
 
+start = pygame.font.Font('font/Pixeltype.ttf', 50)
+start_surf = start.render("Press spacebar to start !", False, 'black').convert_alpha()
+start_rec = start_surf.get_rect(center = (400, 350))
 
 sky = pygame.image.load('graphics/Sky.png').convert()
 ground = pygame.image.load('graphics/ground.png').convert()
@@ -28,7 +34,11 @@ player = pygame.image.load('graphics/Player/player_walk_1.png').convert_alpha()
 player_rectangle = player.get_rect(midbottom = (300, 300))
 player_gravity = 0
 
+player_dupe = pygame.image.load('graphics/Player/player_stand.png').convert_alpha()
+player_dupe = pygame.transform.scale2x(player_dupe)
+player_dupe_rect = player_dupe.get_rect(center = (400, 200))
 snail_x = 0
+score2 = 0
 
 while True:
     for event in pygame.event.get():
@@ -39,8 +49,8 @@ while True:
         screen.blit(sky, (0,0))
         screen.blit(ground, (0,300))
         screen.blit(snail_surface, snail_rectangle)
-        display_score()
-        snail_rectangle.left+=1
+        score2 = display_score()
+        snail_rectangle.left+=2
 
         mouse_pos = pygame.mouse.get_pos()
         if player_rectangle.collidepoint(mouse_pos):
@@ -60,7 +70,17 @@ while True:
 
     else:
 
-        screen.fill("black")
+        screen.fill((94,129,162))
+        screen.blit(player_dupe, player_dupe_rect)
+        screen.blit(start_surf, start_rec)
+        score_mes = test_font.render(f'Your score: {score}', False, 'black')
+        score_mes_rec = score_mes.get_rect(center = (300, 300))
+        if score == 0:
+            screen.blit(title_surf, title_rec)
+
+        else:
+            screen.blit(score_mes, score_mes_rec)
+
         if pygame.key.get_pressed()[pygame.K_SPACE] == 1:
             game_active = True
             snail_rectangle.left = 0
